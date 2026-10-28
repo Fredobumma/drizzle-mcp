@@ -1,6 +1,6 @@
 {
 	"name": "drizzle-mcp",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "Drizzle Studio for agents: an MCP server that lets Claude Code, Cursor and other agents explore your database through your Drizzle schema.",
 	"keywords": [
 		"drizzle",
@@ -21,7 +21,7 @@
 	},
 	"homepage": "https://github.com/fredobumma/drizzle-mcp#readme",
 	"bugs": "https://github.com/fredobumma/drizzle-mcp/issues",
-	"mcpName": "io.github.fredobumma/drizzle-mcp",
+	"mcpName": "io.github.Fredobumma/drizzle-mcp",
 	"type": "module",
 	"exports": {
 		".": {
