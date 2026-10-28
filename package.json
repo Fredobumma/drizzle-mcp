@@ -1,0 +1,81 @@
+{
+	"name": "drizzle-mcp",
+	"version": "0.1.0",
+	"description": "Drizzle Studio for agents: an MCP server that lets Claude Code, Cursor and other agents explore your database through your Drizzle schema.",
+	"keywords": [
+		"drizzle",
+		"drizzle-orm",
+		"mcp",
+		"model-context-protocol",
+		"claude",
+		"cursor",
+		"postgres",
+		"sqlite",
+		"database"
+	],
+	"license": "MIT",
+	"author": "Manfred Obumma <fredobumma@gmail.com>",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/fredobumma/drizzle-mcp.git"
+	},
+	"homepage": "https://github.com/fredobumma/drizzle-mcp#readme",
+	"bugs": "https://github.com/fredobumma/drizzle-mcp/issues",
+	"mcpName": "io.github.fredobumma/drizzle-mcp",
+	"type": "module",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		},
+		"./package.json": "./package.json"
+	},
+	"bin": {
+		"drizzle-mcp": "./dist/cli.js"
+	},
+	"files": [
+		"dist",
+		"src"
+	],
+	"engines": {
+		"node": ">=22"
+	},
+	"scripts": {
+		"build": "rm -rf dist && tsc -p tsconfig.build.json",
+		"prepack": "pnpm build",
+		"typecheck": "tsc -p tsconfig.json",
+		"lint": "biome check .",
+		"format": "biome check --write .",
+		"test": "vitest run",
+		"check": "pnpm typecheck && pnpm lint && pnpm test"
+	},
+	"packageManager": "pnpm@10.5.2",
+	"dependencies": {
+		"@modelcontextprotocol/sdk": "1.32.1",
+		"jiti": "2.7.0",
+		"zod": "4.6.7"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.5.15",
+		"@electric-sql/pglite": "0.5.12",
+		"@electric-sql/pglite-socket": "0.2.15",
+		"@libsql/client": "0.18.0",
+		"@types/better-sqlite3": "9.6.0",
+		"@types/node": "26.6.5",
+		"@types/pg": "8.23.1",
+		"better-sqlite3": "13.0.3",
+		"drizzle-kit": "0.31.11",
+		"drizzle-orm": "0.45.4",
+		"pg": "8.23.1",
+		"postgres": "3.4.9",
+		"tsx": "4.23.15",
+		"typescript": "7.0.2",
+		"vitest": "5.0.4"
+	},
+	"pnpm": {
+		"onlyBuiltDependencies": [
+			"better-sqlite3",
+			"esbuild"
+		]
+	}
+}
