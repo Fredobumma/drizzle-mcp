@@ -23,7 +23,7 @@ import { describeMigrations, migrationStatus } from './migrations.js';
 import { findColumn, findTable, readSchema, type SchemaModel, type TableModel } from './model.js';
 import { type LoadOptions, loadProject, type Project } from './project.js';
 
-export const VERSION = '0.1.2';
+export const VERSION = '0.1.3';
 
 export interface ServerOptions extends LoadOptions {
 	/** A connection string or file that overrides the config's `dbCredentials`. */
