@@ -1,6 +1,6 @@
 {
 	"name": "drizzle-mcp",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"description": "Drizzle Studio for agents: an MCP server that lets Claude Code, Cursor and other agents explore your database through your Drizzle schema.",
 	"keywords": [
 		"drizzle",
