@@ -8,7 +8,7 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 import { connect, type Database, type DriverName, type DrizzleDb } from './database.js';
 import { describeDrift, findDrift } from './drift.js';
-import { type Filter, filterSchema, type Operators, toCondition } from './filters.js';
+import { type Filter, filterDescription, filterSchema, type Operators, toCondition } from './filters.js';
 import {
 	DEFAULT_REDACT,
 	describeSchema,
@@ -133,6 +133,11 @@ async function run(work: () => Promise<{ text: string; data?: Record<string, unk
 	}
 }
 
+const sqlParams = z
+	.array(z.union([z.string(), z.number(), z.boolean(), z.null()]))
+	.optional()
+	.describe('Values for the placeholders in `sql`, in order: $1, $2 on Postgres, ? on SQLite.');
+
 interface WithConfig {
 	[relation: string]: true | { columns?: string[]; limit?: number; with?: WithConfig };
 }
@@ -243,13 +248,24 @@ export async function createServer(
 			inputSchema: {
 				table: z.string().describe('The table: its TypeScript export or SQL name.'),
 				columns: z.array(z.string()).optional().describe('Only these columns.'),
-				where: filterSchema.optional(),
+				where: filterSchema.optional().describe(filterDescription),
 				orderBy: z
-					.array(z.object({ column: z.string(), direction: z.enum(['asc', 'desc']).default('asc') }))
+					.array(
+						z.object({
+							column: z.string().describe('A column: its TypeScript key or SQL name.'),
+							direction: z.enum(['asc', 'desc']).default('asc'),
+						}),
+					)
 					.optional()
 					.describe('Sort order. Defaults to the primary key.'),
-				limit: z.number().int().min(1).max(maxRows).default(Math.min(20, maxRows)),
-				offset: z.number().int().min(0).default(0),
+				limit: z
+					.number()
+					.int()
+					.min(1)
+					.max(maxRows)
+					.default(Math.min(20, maxRows))
+					.describe(`Rows to return, up to ${maxRows}.`),
+				offset: z.number().int().min(0).default(0).describe('Rows to skip, to page through the results.'),
 				with: withSchema
 					.optional()
 					.describe(
@@ -308,7 +324,7 @@ export async function createServer(
 				'Counts the rows in a table that match a filter. With `groupBy`, counts per distinct value, largest groups first: a quick way to see how data is distributed.',
 			inputSchema: {
 				table: z.string().describe('The table: its TypeScript export or SQL name.'),
-				where: filterSchema.optional(),
+				where: filterSchema.optional().describe(filterDescription),
 				groupBy: z.array(z.string()).optional().describe('Columns to count per value of, such as ["status"].'),
 			},
 			annotations: { title: 'Count rows', ...readOnly },
@@ -368,7 +384,7 @@ export async function createServer(
 			description: `Runs one SQL statement in a read-only transaction and returns up to ${maxRows} rows. Use $1, $2 (Postgres) or ? (SQLite) with \`params\` for values. SQL uses table and column SQL names, not TypeScript keys.`,
 			inputSchema: {
 				sql: z.string().describe('One statement, such as a SELECT.'),
-				params: z.array(z.union([z.string(), z.number(), z.boolean(), z.null()])).optional(),
+				params: sqlParams,
 				limit: z.number().int().min(1).max(maxRows).optional().describe(`Rows to return, up to ${maxRows}.`),
 			},
 			annotations: { title: 'Run SQL', ...readOnly },
@@ -399,8 +415,8 @@ export async function createServer(
 			description:
 				'Shows the plan the database would use for a query, to check that indexes are used. With `analyze` on Postgres, runs the query (read-only) and reports real timings.',
 			inputSchema: {
-				sql: z.string(),
-				params: z.array(z.union([z.string(), z.number(), z.boolean(), z.null()])).optional(),
+				sql: z.string().describe('The query to explain: one statement, such as a SELECT.'),
+				params: sqlParams,
 				analyze: z.boolean().optional().describe('Postgres only: run it and show actual rows and timings.'),
 			},
 			annotations: { title: 'Explain a query', ...readOnly },
@@ -466,8 +482,8 @@ export async function createServer(
 				description:
 					'Runs one SQL statement that changes data, such as INSERT, UPDATE or DELETE, and commits it. Prefer RETURNING to see what changed. Only available because the server was started with --allow-writes.',
 				inputSchema: {
-					sql: z.string(),
-					params: z.array(z.union([z.string(), z.number(), z.boolean(), z.null()])).optional(),
+					sql: z.string().describe('One statement that changes data, such as an INSERT, UPDATE or DELETE.'),
+					params: sqlParams,
 				},
 				annotations: { title: 'Change data', readOnlyHint: false, destructiveHint: true, openWorldHint: false },
 			},

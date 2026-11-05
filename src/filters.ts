@@ -32,14 +32,18 @@ export interface Filter {
 	or?: Filter[];
 }
 
+/**
+ * What a filter is, for the tools that take one to describe their `where` with. Only there: when the filter schema
+ * carries the same description, the JSON Schema leaves it off the property and keeps it in a definition clients may not
+ * read.
+ */
+export const filterDescription =
+	'Conditions that must all hold, keyed by column (TypeScript key or SQL name). A plain value means equals: ' +
+	'{"published": true}. Operators: {"createdAt": {"gte": "2026-01-01"}}, {"title": {"ilike": "%drizzle%"}}, ' +
+	'{"id": {"in": [1, 2]}}, {"deletedAt": {"isNull": true}}. Use {"or": [{...}, {...}]} for alternatives.';
+
 export const filterSchema: z.ZodType<Filter> = z.lazy(() =>
-	z
-		.record(z.string(), z.union([scalar, condition, z.array(filterSchema)]))
-		.describe(
-			'Conditions that must all hold, keyed by column (TypeScript key or SQL name). A plain value means equals: ' +
-				'{"published": true}. Operators: {"createdAt": {"gte": "2026-01-01"}}, {"title": {"ilike": "%drizzle%"}}, ' +
-				'{"id": {"in": [1, 2]}}, {"deletedAt": {"isNull": true}}. Use {"or": [{...}, {...}]} for alternatives.',
-		),
+	z.record(z.string(), z.union([scalar, condition, z.array(filterSchema)])),
 ) as z.ZodType<Filter>;
 
 /** The operators from the project's drizzle-orm. */
