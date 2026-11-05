@@ -6,6 +6,8 @@ Drizzle Studio for agents. An [MCP](https://modelcontextprotocol.io) server that
 
 A generic database MCP sees tables and columns. This one reads the schema your code uses: TypeScript names next to SQL names, relations, enums and defaults. An agent can then answer "what's actually in the database?" and write Drizzle code that matches it.
 
+For migrations, use Drizzle's own [drizzle-kit mcp](https://orm.drizzle.team/docs/drizzle-kit-mcp) (drizzle-kit 1.0): it generates, pushes and checks them. drizzle-mcp reads what's in the database, read-only by default, so the two work side by side.
+
 If it's useful to you, a [star on GitHub](https://github.com/fredobumma/drizzle-mcp) helps other people find it. Questions, bug reports and ideas are welcome in the [issues](https://github.com/fredobumma/drizzle-mcp/issues), and so are pull requests.
 
 Here is what an agent gets back when it asks about a `posts` table:
@@ -91,7 +93,7 @@ An agent shouldn't be able to wreck a database by accident, or because something
 
 MySQL isn't supported yet.
 
-drizzle-mcp needs Node.js 22 or newer. It's tested with drizzle-orm 0.45, the current stable release. Drizzle 1.0, still in beta, defines relations differently and isn't supported yet.
+drizzle-mcp needs Node.js 22 or newer. It's tested with drizzle-orm 0.45, the current stable release. Drizzle 1.0, now in release candidates, defines relations differently and isn't supported yet.
 
 ## Options
 
