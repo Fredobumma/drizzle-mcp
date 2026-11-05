@@ -1,8 +1,12 @@
 # drizzle-mcp
 
+[![Drizzle MCP server](https://mcprush.com/badge/drizzle-mcp/card.svg)](https://mcprush.com/to/drizzle-mcp?ref=badge)
+
 Drizzle Studio for agents. An [MCP](https://modelcontextprotocol.io) server that lets Claude Code, Cursor and other coding agents see your database through your Drizzle schema.
 
 A generic database MCP sees tables and columns. This one reads the schema your code uses: TypeScript names next to SQL names, relations, enums and defaults. An agent can then answer "what's actually in the database?" and write Drizzle code that matches it.
+
+If it's useful to you, a [star on GitHub](https://github.com/fredobumma/drizzle-mcp) helps other people find it. Questions, bug reports and ideas are welcome in the [issues](https://github.com/fredobumma/drizzle-mcp/issues), and so are pull requests.
 
 Here is what an agent gets back when it asks about a `posts` table:
 
@@ -117,6 +121,8 @@ pnpm check   # types, lint and 145 tests
 ```
 
 The tests run every tool against every driver. Postgres runs as [PGlite](https://pglite.dev), which is real Postgres compiled to WebAssembly. `pg` and `postgres.js` reach it over the Postgres wire protocol, so no Docker is needed.
+
+Pull requests are welcome. Run `pnpm check` before opening one, and for anything large, open an issue first so we can agree on the approach.
 
 ## License
 
